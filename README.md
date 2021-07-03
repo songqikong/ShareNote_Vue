@@ -1,23 +1,26 @@
 # sharenote_vue
 
 #### 介绍
-希尔笔记的前端vue脚手架
+希尔笔记的前端vue脚手架。
 
 #### 软件架构
-软件架构说明
-
+使用Node.js进行包管理和搭建Vue脚手架项目。  
+使用Vue进行模板渲染和数据绑定。  
+使用ElementUI库。  
+使用axios进行Http请求。  
+使用vue-waterfall进行瀑布流渲染。
 
 #### 安装教程
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+1.  安装Nodejs
+2.  安装vue-cli
+3.  安装axios
+4.  安装ElementUI
+5.  安装vue-waterfall
 
 #### 使用说明
 
-1.  xxxx
-2.  xxxx
-3.  xxxx
+略
 
 #### 参与贡献
 
