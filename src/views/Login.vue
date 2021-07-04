@@ -51,7 +51,7 @@ export default {
         if (valid) {
           //alert('submit!');
           const _this = this
-          this.$axios.post('http://10.140.2.93:8081/login', this.ruleForm).then(res=>{
+          this.$axios.post('http://127.0.0.1:8081/login', this.ruleForm).then(res=>{
             console.log(res.data)
             const jwt = res.headers['authorization']
             const userInfo = res.data.data

@@ -11,12 +11,12 @@
       </el-col>
       <el-col :span="16">
         <el-menu class="el-menu-demo" mode="horizontal" style="height: 60px">
-            <el-menu-item index="1">笔记广场</el-menu-item>
+            <el-menu-item index="1" v-on:click="selectSubject(0)">笔记广场</el-menu-item>
             <el-submenu index="2">
-              <template slot="title">笔记分类</template>
-              <el-menu-item index="2-1">数学</el-menu-item>
-              <el-menu-item index="2-2">语文</el-menu-item>
-              <el-menu-item index="2-3">英语</el-menu-item>
+              <template slot="title">各科目笔记</template>
+              <el-menu-item index="2-1" v-on:click="selectSubject(1)">数学</el-menu-item>
+              <el-menu-item index="2-2" v-on:click="selectSubject(2)">英语</el-menu-item>
+<!--              <el-menu-item index="2-3" v-on:click="selectSubject(2)">英语</el-menu-item>-->
             </el-submenu>
             <el-menu-item index="3">交流心得</el-menu-item>
         </el-menu>
@@ -79,6 +79,11 @@ export default {
   },
 
   methods:{
+    selectSubject(flag){
+      this.$parent.refreshNotes(flag);
+      console.log('刷新')
+    },
+
     notice(){
       this.$notify({
         title: '消息通知',
@@ -118,6 +123,8 @@ export default {
       if (this.$store.getters.getUser.id != null) {
         this.isLogin = true
         this.avatar_src = this.$store.getters.getUser.avatar
+      }else{
+
       }
       console.log(this.isLogin)
   }

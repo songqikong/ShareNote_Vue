@@ -2,9 +2,10 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Index from '../views/Index.vue'
 import Login from '../views/Login.vue'
-import BlogDetail from '../views/BlogDetail.vue'
+import NoteDetail from '../views/NoteDetail.vue'
 import BlogEdit from '../views/NoteEdit.vue'
 import NoteEdit from "@/views/NoteEdit";
+import Register from "@/views/Register";
 
 Vue.use(VueRouter)
 
@@ -20,6 +21,11 @@ const routes = [
     component: Login
   },
   {
+    path: '/register',
+    name: 'Register',
+    component: Register
+  },
+  {
     path: '/note/add',
     name: 'NoteAdd',
     meta : {
@@ -28,9 +34,9 @@ const routes = [
     component: NoteEdit
   },
   {
-    path: '/blog/:blogId',
-    name: 'BlogDetail',
-    component: BlogDetail
+    path: '/note/:noteId',
+    name: 'NoteDetail',
+    component: NoteDetail
   },
   {
     path: '/blog/:blogId/edit',

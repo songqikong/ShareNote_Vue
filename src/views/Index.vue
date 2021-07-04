@@ -27,21 +27,31 @@
         </el-col>
       </el-row>
 <!--瀑布流展示笔记区-->
-      <waterfall :col="4" :data="notes" style="margin-top: 11px">
+      <waterfall :col="4" :data="notes" :loadDistance="50" style="margin-top: 11px" @loadmore="loadmore">
         <template>
           <div
               class="note"
               v-for="(item,index) in notes"
               :key="index"
           >
-            <el-card class="box-card" >
+
+            <el-card class="box-card" body-style="padding-top=20px;padding-left=20px;padding-right=20px;padding-bottom=10px" >
               <div slot="header" class="clearfix">
-                <span style="padding: 0px 0">{{item.title}}</span>
-                <el-button style="float: right;" icon="el-icon-star-off" size="mini"  circle></el-button>
+                <el-row>
+                  <el-col :span="20">
+                    <span style="font-size: 20px;color: #606266">{{item.title}}</span>
+                  </el-col>
+                  <el-col :span="4">
+                    <el-button style="float: right;" icon="el-icon-star-off" size="mini"  circle></el-button>
+
+                  </el-col>
+                </el-row>
               </div>
               <div class="text item">
-                {{item.content}}
+                {{cutString(item.content,420)}}
               </div>
+              <span style="float: bottom;color: #bdbdbd">{{item.sname}}</span>
+              <span style="float: bottom;float:right;color: #bdbdbd">{{item.created}}</span>
             </el-card>
           </div>
         </template>
@@ -49,6 +59,7 @@
 
     </div>
 
+<!--    <div style="width: 100%; min-height: 100%;color: #606266;position:fixed">这个一个全局遮罩</div>-->
   </div>
 
 </template>
@@ -62,10 +73,15 @@ export default {
   data(){
     return{
       notes:[],
+      nextNotes:[],
       state: '',
       subject_req:{
-        subjectId:'2'
-      }
+        subjectId:'0',
+        currentPage:'1',
+        pageSize:'12'
+      },
+      loading:true,
+      cutContent:''
     }
   },
   computed:{
@@ -78,13 +94,37 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
+    refreshNotes(subject){
+      this.subject_req.subjectId = subject;
+      this.getNotes();
+    },
+
     //获取帖子
-    getNotes(){
+    getNotes(currentpage){
+      this.subject_req.currentPage = currentpage;
       const _this = this
-      this.$axios.post("http://10.140.2.93:8081/notes",_this.subject_req).then(res=>{
+      this.$axios.post("http://127.0.0.1:8081/notes",_this.subject_req).then(res=>{
         // console.log(res.data)
         this.notes = res.data.data
         console.log(this.notes)
+        this.$waterfall.forceUpdate()
+
+        var that = this;
+        setTimeout(function (){
+          this.loading = false;
+          console.log("结束加载")
+        },100);
+      })
+    },
+
+    //获取下一轮帖子
+    getNextNotes(currentpage){
+      this.subject_req.currentPage = currentpage;
+      const _this = this
+      this.$axios.post("http://127.0.0.1:8081/notes",_this.subject_req).then(res=>{
+        // console.log(res.data)
+        this.nextNotes = res.data.data
+        console.log(this.nextNotes)
       })
     },
     //发帖按钮
@@ -96,16 +136,9 @@ export default {
       }
     },
 
-    //瀑布流
-    scroll(scrollData){
-      console.log(scrollData)
-    },
-    switchCol(col){
-      this.col = col
-      console.log(this.col)
-    },
     loadmore(index){
-      this.data = this.data.concat(this.data)
+      this.getNextNotes()
+      this.notes = this.notes.concat(this.notes)
     },
 
     //搜索框
@@ -114,6 +147,7 @@ export default {
         { "value": "Merci Paul cafe", "address": "上海市普陀区光复西路丹巴路28弄6号楼819" },
       ];
     },
+
     querySearchAsync(queryString, cb) {
       var restaurants = this.restaurants;
       var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
@@ -123,6 +157,7 @@ export default {
         cb(results);
       }, 3000 * Math.random());
     },
+
     createStateFilter(queryString) {
       return (state) => {
         return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
@@ -131,11 +166,36 @@ export default {
     //菜单栏
     handleSelect(item) {
       console.log(item);
+    },
+
+    cutString(str, len) {
+      //length属性读出来的汉字长度为1
+      if (str.length * 2 <= len) {
+        return str;
+      }
+      var strlen = 0;
+      var s = "";
+      for (var i = 0; i < str.length; i++) {
+        s = s + str.charAt(i);
+        if (str.charCodeAt(i) > 128) {
+          strlen = strlen + 2;
+          if (strlen >= len) {
+            return s.substring(0, s.length - 1) + "...";
+          }
+        } else {
+          strlen = strlen + 1;
+          if (strlen >= len) {
+            return s.substring(0, s.length - 2) + "...";
+          }
+        }
+      }
+      return s;
     }
-  },
+
+},
   mounted() {
     this.restaurants = this.loadAll();
-    this.getNotes();
+    this.getNotes('1');
   }
 }
 </script>
@@ -156,6 +216,7 @@ export default {
 /*卡片内容*/
 .text {
   font-size: 14px;
+  color: #606266;
 }
 .item {
   margin-bottom: 18px;
