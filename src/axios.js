@@ -2,7 +2,7 @@ import axios from 'axios';
 import Element from 'element-ui';
 import store from './store';
 import router from "./router";
-axios.defaults.baseURL = 'http://127.0.0.1:8081/'
+axios.defaults.baseURL = 'http://10.140.5.248:8081/'
 
 axios.interceptors.request.use(config=>{
     console.log("前置拦截")

@@ -27,7 +27,7 @@
         </el-col>
       </el-row>
 <!--瀑布流展示笔记区-->
-      <waterfall :col="4" :data="notes" :loadDistance="50" style="margin-top: 11px" @loadmore="loadmore">
+      <waterfall :col="4" :data="notes" :loadDistance="30" style="margin-top: 11px" @loadmore="loadmore">
         <template>
           <div
               class="note"
@@ -35,11 +35,13 @@
               :key="index"
           >
 
-            <el-card class="box-card" body-style="padding-top=20px;padding-left=20px;padding-right=20px;padding-bottom=10px" >
+            <el-card class="box-card" body-style="padding-top=20px;padding-left=20px;padding-right=20px;padding-bottom=10px">
               <div slot="header" class="clearfix">
                 <el-row>
                   <el-col :span="20">
-                    <span style="font-size: 20px;color: #606266">{{item.title}}</span>
+                    <el-button type="text" style="font-size: 20px;color: #606266;padding-bottom: 0px;padding-top: 2px" @click="router_to_Detail(item.noteId)">{{item.title}}</el-button>
+<!--                      <a style="font-size: 20px;color: #606266" @click.native="router_to_Detail()">{{item.title}}</a>-->
+
                   </el-col>
                   <el-col :span="4">
                     <el-button style="float: right;" icon="el-icon-star-off" size="mini"  circle></el-button>
@@ -47,8 +49,8 @@
                   </el-col>
                 </el-row>
               </div>
-              <div class="text item">
-                {{cutString(item.content,420)}}
+              <div class="text item" v-html="item.content">
+<!--                {{cutString(item.content,420)}}-->
               </div>
               <span style="float: bottom;color: #bdbdbd">{{item.sname}}</span>
               <span style="float: bottom;float:right;color: #bdbdbd">{{item.created}}</span>
@@ -67,6 +69,7 @@
 <script>
 import MenuHeader from "@/components/MenuHeader";
 import Note from "@/components/Note";
+import 'github-markdown-css/github-markdown.css'
 export default {
   name: "Index",
   components : {MenuHeader,Note},
@@ -78,10 +81,12 @@ export default {
       subject_req:{
         subjectId:'0',
         currentPage:'1',
-        pageSize:'12'
+        pageSize:'18'
       },
       loading:true,
-      cutContent:''
+      cutContent:'',
+      curPage:1,
+      curId:'1'
     }
   },
   computed:{
@@ -94,37 +99,49 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
+    router_to_Detail(noteId){
+      this.$router.push("/note/"+noteId)
+    },
+
     refreshNotes(subject){
       this.subject_req.subjectId = subject;
-      this.getNotes();
+      this.getNotes('1');
     },
 
     //获取帖子
     getNotes(currentpage){
       this.subject_req.currentPage = currentpage;
       const _this = this
-      this.$axios.post("http://127.0.0.1:8081/notes",_this.subject_req).then(res=>{
+      this.$axios.post("/notes",_this.subject_req).then(res=>{
         // console.log(res.data)
         this.notes = res.data.data
+        var MarkdownIt = require('markdown-it'),
+            md = new MarkdownIt();
+        for (var i = 0; i < _this.notes.length; i++) {
+          _this.notes[i].content = this.cutString(_this.notes[i].content,420)
+          _this.notes[i].content = md.render(_this.notes[i].content);
+          console.log(_this.notes[i].content)
+        }
         console.log(this.notes)
         this.$waterfall.forceUpdate()
-
-        var that = this;
-        setTimeout(function (){
-          this.loading = false;
-          console.log("结束加载")
-        },100);
+        console.log("强制刷新了")
       })
+
     },
 
     //获取下一轮帖子
     getNextNotes(currentpage){
       this.subject_req.currentPage = currentpage;
+      console.log("下一页页号")
+      console.log(currentpage)
       const _this = this
       this.$axios.post("http://127.0.0.1:8081/notes",_this.subject_req).then(res=>{
-        // console.log(res.data)
-        this.nextNotes = res.data.data
-        console.log(this.nextNotes)
+        _this.nextNotes = res.data.data
+        var MarkdownIt = require('markdown-it'),
+            md = new MarkdownIt();
+        for (var i = 0; i < _this.nextNotes.length; i++) {
+          _this.nextNotes[i].content = md.render(_this.nextNotes[i].content);
+        }
       })
     },
     //发帖按钮
@@ -135,10 +152,13 @@ export default {
         this.$router.push("/note/add")
       }
     },
-
+    //瀑布流加载更多
     loadmore(index){
-      this.getNextNotes()
-      this.notes = this.notes.concat(this.notes)
+      this.curPage+=1
+      this.getNextNotes(this.curPage)
+      this.notes = this.notes.concat(this.nextNotes)
+      console.log(this.notes.length)
+      // this.$waterfall.forceUpdate()
     },
 
     //搜索框
