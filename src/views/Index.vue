@@ -14,15 +14,16 @@
             <el-button type="text" style="font-size:medium">全部笔记</el-button>
             <el-button type="text" style="color:#bdbdbd">只看我的</el-button>
           </div>
-
+<!--搜索框-->
           <el-button icon="el-icon-search" style="float: right;margin-left: 6px;margin-right: 5px"></el-button>
           <el-autocomplete
               v-model="state"
-              :fetch-suggestions="querySearchAsync"
               placeholder="请输入内容"
               @select=""
+              :fetch-suggestions="querySearchAsync"
               style="float: right;margin-left: 20px"
           ></el-autocomplete>
+<!--          -->
 
         </el-col>
       </el-row>
@@ -35,7 +36,7 @@
               :key="index"
           >
 
-            <el-card class="box-card" body-style="padding-top=20px;padding-left=20px;padding-right=20px;padding-bottom=10px">
+            <el-card class="box-card" body-style="padding-top:0px">
               <div slot="header" class="clearfix">
                 <el-row>
                   <el-col :span="20">
@@ -44,7 +45,7 @@
 
                   </el-col>
                   <el-col :span="4">
-                    <el-button style="float: right;" icon="el-icon-star-off" size="mini"  circle></el-button>
+                    <el-button style="float: right;" icon="el-icon-star-off" size="mini"  circle @click="star(item.noteId)"></el-button>
 
                   </el-col>
                 </el-row>
@@ -53,7 +54,7 @@
 <!--                {{cutString(item.content,420)}}-->
               </div>
               <span style="float: bottom;color: #bdbdbd">{{item.sname}}</span>
-              <span style="float: bottom;float:right;color: #bdbdbd">{{item.created}}</span>
+              <span style="float:right;color: #bdbdbd">{{item.created}}</span>
             </el-card>
           </div>
         </template>
@@ -77,13 +78,14 @@ export default {
     return{
       notes:[],
       nextNotes:[],
+      restaurants: [],
       state: '',
       subject_req:{
         subjectId:'0',
         currentPage:'1',
         pageSize:'18'
       },
-      loading:true,
+      // loading:true,
       cutContent:'',
       curPage:1,
       curId:'1'
@@ -99,6 +101,36 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
+    search(){
+      this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
+        var data = res.data.data()
+        console.log(data)
+      })
+    },
+    star(noteid){
+      // console.log(this.$store.getters.getUser.id)
+      if(this.$store.getters.getUser.id === undefined){
+        this.$message.error('请先登录！');
+      }else{
+        this.$axios.post("/note/star",{starNoteId:noteid},{
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res=>{
+          if(res.data.data === "star"){
+            this.$message({
+              message: '收藏成功',
+              type: 'success'
+            });
+          }else if(res.data.data === "remove star"){
+            this.$message({
+              message: '取消收藏成功',
+              type: 'success'
+            });
+          }
+        })
+      }
+    },
     router_to_Detail(noteId){
       this.$router.push("/note/"+noteId)
     },
@@ -119,27 +151,32 @@ export default {
             md = new MarkdownIt();
         for (var i = 0; i < _this.notes.length; i++) {
           _this.notes[i].content = this.cutString(_this.notes[i].content,420)
+          _this.notes[i].title = this.cutString(_this.notes[i].title,35)
           _this.notes[i].content = md.render(_this.notes[i].content);
-          console.log(_this.notes[i].content)
+          // console.log(_this.notes[i].content)
         }
-        console.log(this.notes)
+        // console.log(this.notes)
         this.$waterfall.forceUpdate()
-        console.log("强制刷新了")
+        // console.log("强制刷新了")
       })
 
+      // console.log("当前note")
+      // console.log(this.notes)
     },
 
     //获取下一轮帖子
     getNextNotes(currentpage){
       this.subject_req.currentPage = currentpage;
       console.log("下一页页号")
-      console.log(currentpage)
+      // console.log(currentpage)
       const _this = this
-      this.$axios.post("http://127.0.0.1:8081/notes",_this.subject_req).then(res=>{
+      this.$axios.post("/notes",_this.subject_req).then(res=>{
         _this.nextNotes = res.data.data
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
         for (var i = 0; i < _this.nextNotes.length; i++) {
+          _this.nextNotes[i].content = this.cutString(_this.nextNotes[i].content,420)
+          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,35)
           _this.nextNotes[i].content = md.render(_this.nextNotes[i].content);
         }
       })
@@ -169,6 +206,16 @@ export default {
     },
 
     querySearchAsync(queryString, cb) {
+      console.log(this.state)
+      this.$axios.post("/note/search",{searchString:this.state,subjectId:1},{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res=>{
+        var data = res.data.data()
+        console.log(data)
+      })
+
       var restaurants = this.restaurants;
       var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 

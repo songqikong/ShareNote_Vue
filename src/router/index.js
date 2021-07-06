@@ -34,18 +34,21 @@ const routes = [
     component: NoteEdit
   },
   {
+    path: '/note/:noteId/:noteVersion/edit',
+    name: 'NoteEdit',
+    meta : {
+      requireAuth: true
+    },
+    components: {
+      default: NoteEdit
+    }
+  },
+  {
     path: '/note/:noteId',
     name: 'NoteDetail',
     component: NoteDetail
   },
-  {
-    path: '/blog/:blogId/edit',
-    name: 'BlogEdit',
-    meta : {
-      requireAuth: true
-    },
-    component: BlogEdit
-  },
+
 
 ]
 

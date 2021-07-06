@@ -2,16 +2,16 @@ import axios from 'axios';
 import Element from 'element-ui';
 import store from './store';
 import router from "./router";
-axios.defaults.baseURL = 'http://10.140.5.248:8081/'
+axios.defaults.baseURL = 'http://10.140.3.70:8081/'
 
 axios.interceptors.request.use(config=>{
-    console.log("前置拦截")
+    // console.log("前置拦截")
     return config
 })
 
 axios.interceptors.response.use(response=>{
     const res = response.data;
-    console.log("后置拦截");
+    // console.log("后置拦截");
     if(res.code === 200){
         return response;
     }else{

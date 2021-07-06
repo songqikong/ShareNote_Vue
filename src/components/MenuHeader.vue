@@ -26,7 +26,8 @@
         <el-menu mode="horizontal" style="height: 60px">
           <el-menu-item style="float: right;">
             <el-dropdown class="avatar_dropdown"
-                         @command="handleCommand">
+                         @command="handleCommand"
+                          style="">
             <span class="el-dropdown-link" >
 <!--              头像-->
             <img class="avatar" v-bind:src="avatar_src">
@@ -38,6 +39,8 @@
                 <el-dropdown-item v-show="!isLogin"
                                   command="register">注册</el-dropdown-item>
 
+                <el-dropdown-item v-show="isLogin"
+                                  command="username">{{ username }}</el-dropdown-item>
                 <el-dropdown-item v-show="isLogin"
                                   command="profile">个人信息</el-dropdown-item>
                 <el-dropdown-item v-show="isLogin"
@@ -74,11 +77,13 @@ export default {
   data() {
     return {
         isLogin: false,
-        avatar_src:'/static/custom.png',
+        avatar_src:"",
+        username:""
     }
   },
 
   methods:{
+
     selectSubject(flag){
       this.$parent.refreshNotes(flag);
       console.log('刷新')
@@ -118,15 +123,15 @@ export default {
     }
   },
 
-  mounted:function () {
-      // const _this = this
-      if (this.$store.getters.getUser.id != null) {
-        this.isLogin = true
-        this.avatar_src = this.$store.getters.getUser.avatar
-      }else{
-
-      }
-      console.log(this.isLogin)
+  mounted: function () {
+    // const _this = this
+    if (this.$store.getters.getUser !== null) {
+      this.isLogin = true
+      this.avatar_src = this.$store.getters.getUser.avatar
+    } else {
+      this.avatar_src = "/static/custom.png"
+      this.username = "没有用户"
+    }
   }
 }
 
@@ -151,8 +156,8 @@ export default {
 }
 .avatar{
   height: 40px;
-  margin-top: 10px;
-  margin-bottom: 40px;
-  border-radius:5px
+  /*margin-top: */
+  /*margin-bottom: 40px;*/
+  border-radius:6px
 }
 </style>

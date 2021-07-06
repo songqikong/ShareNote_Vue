@@ -73,7 +73,7 @@ export default {
       visibility:'',
 
       editForm: {
-        noteVersionId:'0',
+        noteVersionId:'1',
         userId:this.$store.getters.getUser.id,
         noteId:'-1',
         publicStatus:'',
@@ -101,15 +101,31 @@ export default {
     }
   },
   created() {
-    const blogId = this.$route.params.blogId
+    const noteId = this.$route.params.noteId
+    const noteVersion = this.$route.params.noteVersion
     const _this = this
-    if(blogId) {
-      this.$axios.get('/blog/' + blogId).then((res) => {
-        const blog = res.data.data
-        _this.editForm.id = blog.id
-        _this.editForm.title = blog.title
-        _this.editForm.description = blog.description
-        _this.editForm.content = blog.content
+    if(noteId) {
+      this.$axios.get('/note/' + noteId,{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then((res) => {
+        const data = res.data.data
+
+        for (var i = 0; i < data.note_version_subject.length; i++) {
+          if(data.note_version_subject[i].version.toString() === noteVersion){
+            var curVersion = data.note_version_subject[i]
+          }
+        }
+        console.log(curVersion)
+        this.editForm.noteId = data.note.id
+        this.editForm.title = curVersion.title
+        this.editForm.content = curVersion.content
+        this.editForm.noteVersionId = Number.parseInt(noteVersion)
+        console.log("已经将版本更新"+this.editForm.noteVersionId);
+        // console.log("初始传入诗句")
+        // console.log(this.editForm)
+        // console.log(note)
       });
     }
   },
@@ -118,7 +134,7 @@ export default {
       const _this = this
       this.$axios.get('/subject').then(res=>{
         _this.subject = res.data.data
-        console.log(_this.subject)
+        // console.log(_this.subject)
       })
     },
 

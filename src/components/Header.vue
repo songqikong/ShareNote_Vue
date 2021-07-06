@@ -20,11 +20,8 @@
           </el-badge>
 
           <el-dropdown class="avatar">
-          <span class="el-dropdown-link">
           <img src="public/static/custom.png" style="height: 40px">
-            <!--            <i class="el-icon-arrow-down el-icon&#45;&#45;right"></i>-->
-          </span>
-            <el-dropdown-menu slot="dropdown">
+            <el-dropdown-menu slot="dropdown" style="margin-bottom: 20px">
               <el-dropdown-item>黄金糕</el-dropdown-item>
               <el-dropdown-item>狮子头</el-dropdown-item>
               <el-dropdown-item>螺蛳粉</el-dropdown-item>
@@ -69,6 +66,7 @@ export default {
 .el-dropdown-link {
   cursor: pointer;
   color: #409EFF;
+  /*margin-bottom: 20px;*/
 }
 .el-icon-arrow-down {
   font-size: 12px;
