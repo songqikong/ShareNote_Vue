@@ -83,7 +83,7 @@ export default {
 
                 console.log(_this.$store.getters.getUser)
                 _this.$message('注册成功！');
-                _this.$router.push("/")
+                _this.$router.push("/login")
               })
             } else {
               console.log('error submit!!');

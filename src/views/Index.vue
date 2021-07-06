@@ -21,17 +21,18 @@
               v-model="state"
               placeholder="请输入内容"
               @select=""
-              @input="loadAll"
               :fetch-suggestions="querySearchAsync"
-              :suffix-icon="el-icon-search"
-              style="float: right;margin-left: 20px"
-          ></el-autocomplete>
+              @select="handleSelect"
+              style="float: right;margin-left: 20px;width: 300px"
+          >
+            <i class="el-icon-search el-input__icon" slot="suffix"></i>
+          </el-autocomplete>
 <!--          -->
 
         </el-col>
       </el-row>
 <!--瀑布流展示笔记区-->
-      <waterfall :col="4" :data="notes" :loadDistance="30" style="margin-top: 11px" @loadmore="loadmore">
+      <waterfall :col="4" :data="notes" :loadDistance="100" style="margin-top: 11px" @loadmore="loadmore">
         <template>
           <div
               class="note"
@@ -49,7 +50,6 @@
                   </el-col>
                   <el-col :span="4">
                     <el-button style="float: right;" icon="el-icon-star-off" size="mini"  circle @click="star(item.noteId)"></el-button>
-
                   </el-col>
                 </el-row>
               </div>
@@ -92,6 +92,7 @@ export default {
       cutContent:'',
       curPage:1,
       curId:'1',
+      searchImg:'/static/img/search.png'
       // searchResult: [{
       //   value:"",
       //   data:{}
@@ -108,6 +109,9 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
+    handleSelect(item){
+      this.$router.push("/note/"+item.userid)
+    },
     // search(){
     //   this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
     //     var data = res.data.data()
@@ -157,7 +161,7 @@ export default {
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
         for (var i = 0; i < _this.notes.length; i++) {
-          _this.notes[i].content = this.cutString(_this.notes[i].content,420)
+          _this.notes[i].content = this.cutString(_this.notes[i].content,300)
           _this.notes[i].title = this.cutString(_this.notes[i].title,35)
           _this.notes[i].content = md.render(_this.notes[i].content);
           // console.log(_this.notes[i].content)
@@ -205,26 +209,6 @@ export default {
       // this.$waterfall.forceUpdate()
     },
 
-    //搜索框
-    loadAll() {
-      // // console.log(this.state)
-      // if(this.state !== ''){
-      //   this.$axios.post("/note/search",{searchString:this.state,subjectId:0},{
-      //     headers: {
-      //       "Authorization": localStorage.getItem("token")
-      //     }
-      //   }).then(res=>{
-      //     for(var i = 0 ; i < res.data.data.length ; i++){
-      //       this.searchResult[i].data = res.data.data[i]
-      //       this.searchResult[i].values = res.data.data[i].title
-      //     }
-      //
-      //     // console.log(this.searchResult)
-      //   })
-      // }
-
-    },
-
     querySearchAsync(queryString, cb) {
 
       if(this.state !== '') {
@@ -239,7 +223,7 @@ export default {
           let arrs=new Array();
           for (var i = 0; i < res.data.data.length; i++) {
             let u=res.data.data[i];
-            let arr={"value":u.title,"title":u.userId};
+            let arr={"value":u.title,"userid":u.userId};
             arrs.push(arr);
           }
           // console.log(arrs)
@@ -282,7 +266,9 @@ export default {
 },
   mounted() {
     this.getNotes('1');
-  }
+    this.curPage+=1
+    this.getNextNotes(this.curPage)
+  },
 }
 </script>
 
