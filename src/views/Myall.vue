@@ -1,5 +1,5 @@
 <template>
-  <div class="Index">
+  <div class="Myall">
     <MenuHeader></MenuHeader>
 <!--    内容展示区-->
     <div class="Main">
@@ -40,7 +40,7 @@
               :key="index"
           >
 
-            <el-card class="box-card" body-style="padding-top:0px"  shadow="hover">
+            <el-card class="box-card" body-style="padding-top:0px">
               <div slot="header" class="clearfix">
                 <el-row>
                   <el-col :span="20">
@@ -75,7 +75,7 @@ import MenuHeader from "@/components/MenuHeader";
 import Note from "@/components/Note";
 import '/node_modules/mavon-editor/resources/markdown/github-markdown.min.css'
 export default {
-  name: "Index",
+  name: "Myall",
   components : {MenuHeader,Note},
   data(){
     return{
@@ -86,7 +86,7 @@ export default {
       subject_req:{
         subjectId:'0',
         currentPage:'1',
-        pageSize:'12'
+        pageSize:'15'
       },
       // loading:true,
       cutContent:'',
@@ -109,10 +109,7 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
-    handleSelect(item){
-      console.log(item);
-      this.$router.push("/note/"+item.noteId)
-    },
+
     // search(){
     //   this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
     //     var data = res.data.data()
@@ -156,15 +153,18 @@ export default {
     getNotes(currentpage){
       this.subject_req.currentPage = currentpage;
       const _this = this
-      this.$axios.post("/notes",_this.subject_req).then(res=>{
-        console.log("当前的数据")
-        console.log(res.data.data)
+      this.$axios.post("/note/myall", this.subject_req,{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res=>{
+        // console.log(res.data)
         this.notes = res.data.data
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
         for (var i = 0; i < _this.notes.length; i++) {
           _this.notes[i].content = this.cutString(_this.notes[i].content,300)
-          _this.notes[i].title = this.cutString(_this.notes[i].title,30)
+          _this.notes[i].title = this.cutString(_this.notes[i].title,35)
           _this.notes[i].content = md.render(_this.notes[i].content);
           // console.log(_this.notes[i].content)
         }
@@ -183,25 +183,23 @@ export default {
       console.log("下一页页号")
       // console.log(currentpage)
       const _this = this
-      this.$axios.post("/notes",_this.subject_req).then(res=>{
+      this.$axios.post("/note/myall",this.subject_req,{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }}).then(res=>{
         _this.nextNotes = res.data.data
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
         for (var i = 0; i < _this.nextNotes.length; i++) {
           _this.nextNotes[i].content = this.cutString(_this.nextNotes[i].content,420)
-          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,30)
+          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,35)
           _this.nextNotes[i].content = md.render(_this.nextNotes[i].content);
         }
       })
     },
     //发帖按钮
     postNote(){
-      if(this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined){
-        this.$message({
-          showClose: true,
-          message: '请登录',
-          type: 'error'
-        });
+      if(this.$store.getters.getUser.id == null){
         this.$router.push("/login")
       }else{
         this.$router.push("/note/add")
@@ -230,10 +228,10 @@ export default {
           let arrs=new Array();
           for (var i = 0; i < res.data.data.length; i++) {
             let u=res.data.data[i];
-            let arr={"value":u.title,"noteId":u.noteId};
+            let arr={"value":u.title,"userid":u.userId};
             arrs.push(arr);
           }
-          console.log(arrs)
+          // console.log(arrs)
 
           cb(arrs);
         })
@@ -244,6 +242,9 @@ export default {
       // var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
 
+    },
+    handleSelect(item){
+      this.$router.push("/note/"+item.userid)
     },
 
     cutString(str, len) {
@@ -268,24 +269,14 @@ export default {
         }
       }
       return s;
-    },
-
-    forceUpdate(){
-      this.getNextNotes(this.curPage)
-    },
+    }
 
 },
   mounted() {
-    // this.getNotes('1');
-    // console.log("第一次获取数据了")
     this.getNotes('1');
     this.curPage+=1
     this.getNextNotes(this.curPage)
-
   },
-  created() {
-
-  }
 }
 </script>
 
