@@ -10,7 +10,7 @@ import waterfall from 'vue-waterfall2'
 
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
-// use
+// use test
 Vue.use(mavonEditor)
 Vue.use(waterfall)
 Vue.use(Element)
