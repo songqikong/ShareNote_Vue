@@ -1,5 +1,5 @@
 <template>
-  <div class="Index">
+  <div class="Myall">
     <MenuHeader></MenuHeader>
 <!--    内容展示区-->
     <div class="Main">
@@ -75,7 +75,7 @@ import MenuHeader from "@/components/MenuHeader";
 import Note from "@/components/Note";
 import '/node_modules/mavon-editor/resources/markdown/github-markdown.min.css'
 export default {
-  name: "Index",
+  name: "Myall",
   components : {MenuHeader,Note},
   data(){
     return{
@@ -86,7 +86,7 @@ export default {
       subject_req:{
         subjectId:'0',
         currentPage:'1',
-        pageSize:'18'
+        pageSize:'15'
       },
       // loading:true,
       cutContent:'',
@@ -109,9 +109,7 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
-    handleSelect(item){
-      this.$router.push("/note/"+item.userid)
-    },
+
     // search(){
     //   this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
     //     var data = res.data.data()
@@ -155,7 +153,11 @@ export default {
     getNotes(currentpage){
       this.subject_req.currentPage = currentpage;
       const _this = this
-      this.$axios.post("/notes",_this.subject_req).then(res=>{
+      this.$axios.post("/note/myall", this.subject_req,{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then(res=>{
         // console.log(res.data)
         this.notes = res.data.data
         var MarkdownIt = require('markdown-it'),
@@ -181,7 +183,10 @@ export default {
       console.log("下一页页号")
       // console.log(currentpage)
       const _this = this
-      this.$axios.post("/notes",_this.subject_req).then(res=>{
+      this.$axios.post("/note/myall",this.subject_req,{
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }}).then(res=>{
         _this.nextNotes = res.data.data
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
@@ -237,6 +242,9 @@ export default {
       // var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
 
 
+    },
+    handleSelect(item){
+      this.$router.push("/note/"+item.userid)
     },
 
     cutString(str, len) {
