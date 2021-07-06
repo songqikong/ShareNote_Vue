@@ -136,6 +136,7 @@ export default {
       const _this = this
       const noteId = this.$route.params.noteId
 
+      // console.log("noteid = " + noteId)
       this.$axios.get("/note/" + noteId, {
         headers: {
           "Authorization": localStorage.getItem("token")
@@ -143,17 +144,25 @@ export default {
       }).then(res => {
         this.noteInf = res.data.data.note
         _this.noteVersion = res.data.data.note_version_subject
+        // console.log(_this.noteVersion)
 
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
         for (var i = 0; i < this.noteVersion.length; i++) {
           this.noteVersion[i].content = md.render(this.noteVersion[i].content);
+          // console.log(this.noteVersion[i].content)
         }
-
+        // console.log(_this.noteVersion)
         _this.curTitle = _this.noteVersion[_this.noteVersion.length - 1].title
         _this.curContent = _this.noteVersion[_this.noteVersion.length - 1].content
         this.ownNote = (_this.noteInf.userId === _this.$store.getters.getUser.id)
       })
+
+      // console.log("发帖人" + _this.noteInf.userId + "当前用户" + _this.$store.getters.getUser.id + "ownNote状态" + this.ownNote)
+      // console.log(_this.noteInf)
+      // console.log(_this.noteVersion)
+
+      // console.log(this.curTitle)
     },
 
     updateNote() {
@@ -162,6 +171,14 @@ export default {
   },
   mounted() {
     this.getNote()
+    if(this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined){
+      this.$alert('您还没有登录', '请登录！', {
+        confirmButtonText: '确定',
+        callback: action => {
+          this.$router.push("/login")
+        }
+      })
+    }
   }
 }
 </script>

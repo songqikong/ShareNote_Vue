@@ -4,6 +4,7 @@
 <!--    内容展示区-->
     <div class="Main">
 <!--      发布帖子按钮 / 选择查看权限 / 搜索框-->
+
       <el-row>
         <el-col :span="24">
           <div class="post">
@@ -15,12 +16,14 @@
             <el-button type="text" style="color:#bdbdbd">只看我的</el-button>
           </div>
 <!--搜索框-->
-          <el-button icon="el-icon-search" style="float: right;margin-left: 6px;margin-right: 5px"></el-button>
+<!--          <el-button icon="el-icon-search" style="float: right;margin-left: 6px;margin-right: 5px"></el-button>-->
           <el-autocomplete
               v-model="state"
               placeholder="请输入内容"
               @select=""
+              @input="loadAll"
               :fetch-suggestions="querySearchAsync"
+              :suffix-icon="el-icon-search"
               style="float: right;margin-left: 20px"
           ></el-autocomplete>
 <!--          -->
@@ -78,7 +81,7 @@ export default {
     return{
       notes:[],
       nextNotes:[],
-      restaurants: [],
+      // restaurants: [],
       state: '',
       subject_req:{
         subjectId:'0',
@@ -88,7 +91,11 @@ export default {
       // loading:true,
       cutContent:'',
       curPage:1,
-      curId:'1'
+      curId:'1',
+      // searchResult: [{
+      //   value:"",
+      //   data:{}
+      // }]
     }
   },
   computed:{
@@ -101,12 +108,12 @@ export default {
   },
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
-    search(){
-      this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
-        var data = res.data.data()
-        console.log(data)
-      })
-    },
+    // search(){
+    //   this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
+    //     var data = res.data.data()
+    //     // console.log(data)
+    //   })
+    // },
     star(noteid){
       // console.log(this.$store.getters.getUser.id)
       if(this.$store.getters.getUser.id === undefined){
@@ -194,45 +201,58 @@ export default {
       this.curPage+=1
       this.getNextNotes(this.curPage)
       this.notes = this.notes.concat(this.nextNotes)
-      console.log(this.notes.length)
+      // console.log(this.notes.length)
       // this.$waterfall.forceUpdate()
     },
 
     //搜索框
     loadAll() {
-      return [
-        { "value": "Merci Paul cafe", "address": "上海市普陀区光复西路丹巴路28弄6号楼819" },
-      ];
+      // // console.log(this.state)
+      // if(this.state !== ''){
+      //   this.$axios.post("/note/search",{searchString:this.state,subjectId:0},{
+      //     headers: {
+      //       "Authorization": localStorage.getItem("token")
+      //     }
+      //   }).then(res=>{
+      //     for(var i = 0 ; i < res.data.data.length ; i++){
+      //       this.searchResult[i].data = res.data.data[i]
+      //       this.searchResult[i].values = res.data.data[i].title
+      //     }
+      //
+      //     // console.log(this.searchResult)
+      //   })
+      // }
+
     },
 
     querySearchAsync(queryString, cb) {
-      console.log(this.state)
-      this.$axios.post("/note/search",{searchString:this.state,subjectId:1},{
-        headers: {
-          "Authorization": localStorage.getItem("token")
-        }
-      }).then(res=>{
-        var data = res.data.data()
-        console.log(data)
-      })
 
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+      if(this.state !== '') {
+        // console.log(this.state)
+        this.$axios.post("/note/search", {searchString: this.state, subjectId: 0}, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          console.log("当前state"+this.state)
+          console.log(res.data.data)
+          let arrs=new Array();
+          for (var i = 0; i < res.data.data.length; i++) {
+            let u=res.data.data[i];
+            let arr={"value":u.title,"title":u.userId};
+            arrs.push(arr);
+          }
+          // console.log(arrs)
 
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        cb(results);
-      }, 3000 * Math.random());
-    },
+          cb(arrs);
+        })
+      }
 
-    createStateFilter(queryString) {
-      return (state) => {
-        return (state.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    //菜单栏
-    handleSelect(item) {
-      console.log(item);
+      // console.log(this.searchResult)
+
+      // var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+
+
     },
 
     cutString(str, len) {
@@ -261,7 +281,6 @@ export default {
 
 },
   mounted() {
-    this.restaurants = this.loadAll();
     this.getNotes('1');
   }
 }

@@ -14,7 +14,8 @@ axios.interceptors.response.use(response=>{
     // console.log("后置拦截");
     if(res.code === 200){
         return response;
-    }else{
+    }else if (res.code === 400){
+        // console.log("拦截");
         //账号密码不正确 弹窗警告
         Element.Message({
             message:response.data.msg,
@@ -41,10 +42,14 @@ axios.interceptors.response.use(response=>{
         if(error.response.status === 403){
             error.message = '您没有权限查看';
         }
-        Element.Message({
-            message:error.message,
-            type:'error',
-            duration:1000
-        })
+        if(error.response.data.data !== null){
+            console.log("拦截")
+            Element.Message({
+                message:error.message,
+                type:'error',
+                duration:1000
+            })
+        }
+
         return Promise.reject(error)
     })

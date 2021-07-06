@@ -125,12 +125,14 @@ export default {
 
   mounted: function () {
     // const _this = this
-    if (this.$store.getters.getUser !== null) {
-      this.isLogin = true
-      this.avatar_src = this.$store.getters.getUser.avatar
-    } else {
+    if (this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined) {
       this.avatar_src = "/static/custom.png"
       this.username = "没有用户"
+      // console.log("没有用户")
+    } else {
+      this.isLogin = true
+      this.avatar_src = this.$store.getters.getUser.avatar
+      // console.log("有用户")
     }
   }
 }
