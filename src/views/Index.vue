@@ -73,7 +73,7 @@
 <script>
 import MenuHeader from "@/components/MenuHeader";
 import Note from "@/components/Note";
-import 'github-markdown-css/github-markdown.css'
+import '/node_modules/mavon-editor/dist/markdown/github-markdown.min.css'
 export default {
   name: "Index",
   components : {MenuHeader,Note},
