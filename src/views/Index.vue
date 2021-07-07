@@ -40,7 +40,7 @@
               :key="index"
           >
 
-            <el-card class="box-card" body-style="padding-top:0px">
+            <el-card class="box-card" body-style="padding-top:0px"  shadow="hover">
               <div slot="header" class="clearfix">
                 <el-row>
                   <el-col :span="20">
@@ -164,7 +164,7 @@ export default {
             md = new MarkdownIt();
         for (var i = 0; i < _this.notes.length; i++) {
           _this.notes[i].content = this.cutString(_this.notes[i].content,300)
-          _this.notes[i].title = this.cutString(_this.notes[i].title,35)
+          _this.notes[i].title = this.cutString(_this.notes[i].title,30)
           _this.notes[i].content = md.render(_this.notes[i].content);
           // console.log(_this.notes[i].content)
         }
@@ -189,14 +189,19 @@ export default {
             md = new MarkdownIt();
         for (var i = 0; i < _this.nextNotes.length; i++) {
           _this.nextNotes[i].content = this.cutString(_this.nextNotes[i].content,420)
-          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,35)
+          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,30)
           _this.nextNotes[i].content = md.render(_this.nextNotes[i].content);
         }
       })
     },
     //发帖按钮
     postNote(){
-      if(this.$store.getters.getUser.id == null){
+      if(this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined){
+        this.$message({
+          showClose: true,
+          message: '请登录',
+          type: 'error'
+        });
         this.$router.push("/login")
       }else{
         this.$router.push("/note/add")

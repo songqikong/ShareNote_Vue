@@ -30,7 +30,7 @@
                           style="">
             <span class="el-dropdown-link" >
 <!--              头像-->
-            <img class="avatar" v-bind:src="avatar_src">
+            <img class="avatar" v-bind:src="avatar_src" alt="ava" style="margin-bottom: 5px">
             </span>
               <el-dropdown-menu slot="dropdown"
                                 style="position: absolute;left:100px;top:100px">

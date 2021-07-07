@@ -18,7 +18,7 @@
 <script>
 export default {
   mounted() {
-    document.querySelector('body').setAttribute('style', 'background-color:#f6f6f6;margin:0px')
+    document.querySelector('body').setAttribute('style', 'background-color:#f6f6f663;margin:0px')
   },
   beforeDestroy() {
     document.querySelector('body').removeAttribute('style')
