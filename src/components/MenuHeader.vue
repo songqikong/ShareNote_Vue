@@ -30,7 +30,7 @@
                           style="">
             <span class="el-dropdown-link" >
 <!--              头像-->
-            <img class="avatar" v-bind:src="avatar_src">
+            <img class="avatar" v-bind:src="avatar_src" alt="ava" style="margin-bottom: 5px">
             </span>
               <el-dropdown-menu slot="dropdown"
                                 style="position: absolute;left:100px;top:100px">
@@ -131,6 +131,7 @@ export default {
       // console.log("没有用户")
     } else {
       this.isLogin = true
+      this.username = this.$store.getters.getUser.username
       this.avatar_src = this.$store.getters.getUser.avatar
       // console.log("有用户")
     }

@@ -41,7 +41,15 @@
 
             <!--            <el-divider style="margin-top: 0"></el-divider>-->
 
-            <div class="details" v-html="curContent"></div>
+            <div class="details" v-html="curContent">
+            </div>
+
+            <el-card>
+              <span style="float: bottom;color: #bdbdbd">{{noteVersion[0].sname}}</span>
+              <span style="float:right;color: #bdbdbd">{{noteVersion[0].editTime}}</span>
+            </el-card>
+
+
           </el-card>
 
         </el-col>
@@ -295,8 +303,8 @@ export default {
           // console.log(this.noteVersion[i].content)
         }
         // console.log(_this.noteVersion)
-        _this.curTitle = _this.noteVersion[_this.noteVersion.length - 1].title
-        _this.curContent = _this.noteVersion[_this.noteVersion.length - 1].content
+        _this.curTitle = _this.noteVersion[0].title
+        _this.curContent = _this.noteVersion[0].content
         this.ownNote = (_this.noteInf.userId === _this.$store.getters.getUser.id)
       })
 

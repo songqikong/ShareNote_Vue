@@ -40,7 +40,7 @@
               :key="index"
           >
 
-            <el-card class="box-card" body-style="padding-top:0px">
+            <el-card class="box-card" body-style="padding-top:0px"  shadow="hover">
               <div slot="header" class="clearfix">
                 <el-row>
                   <el-col :span="20">
@@ -86,7 +86,7 @@ export default {
       subject_req:{
         subjectId:'0',
         currentPage:'1',
-        pageSize:'18'
+        pageSize:'12'
       },
       // loading:true,
       cutContent:'',
@@ -110,7 +110,8 @@ export default {
   //下边的内容没有用到，需要的小伙伴可以看文档了解，如果需求后续回更新
   methods:{
     handleSelect(item){
-      this.$router.push("/note/"+item.userid)
+      console.log(item);
+      this.$router.push("/note/"+item.noteId)
     },
     // search(){
     //   this.$axios.post("/note/search",{searchString:this.state,subjectId:'0'}).then(res=>{
@@ -156,13 +157,14 @@ export default {
       this.subject_req.currentPage = currentpage;
       const _this = this
       this.$axios.post("/notes",_this.subject_req).then(res=>{
-        // console.log(res.data)
+        console.log("当前的数据")
+        console.log(res.data.data)
         this.notes = res.data.data
         var MarkdownIt = require('markdown-it'),
             md = new MarkdownIt();
         for (var i = 0; i < _this.notes.length; i++) {
           _this.notes[i].content = this.cutString(_this.notes[i].content,300)
-          _this.notes[i].title = this.cutString(_this.notes[i].title,35)
+          _this.notes[i].title = this.cutString(_this.notes[i].title,30)
           _this.notes[i].content = md.render(_this.notes[i].content);
           // console.log(_this.notes[i].content)
         }
@@ -187,14 +189,19 @@ export default {
             md = new MarkdownIt();
         for (var i = 0; i < _this.nextNotes.length; i++) {
           _this.nextNotes[i].content = this.cutString(_this.nextNotes[i].content,420)
-          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,35)
+          _this.nextNotes[i].title = this.cutString(_this.nextNotes[i].title,30)
           _this.nextNotes[i].content = md.render(_this.nextNotes[i].content);
         }
       })
     },
     //发帖按钮
     postNote(){
-      if(this.$store.getters.getUser.id == null){
+      if(this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined){
+        this.$message({
+          showClose: true,
+          message: '请登录',
+          type: 'error'
+        });
         this.$router.push("/login")
       }else{
         this.$router.push("/note/add")
@@ -223,10 +230,10 @@ export default {
           let arrs=new Array();
           for (var i = 0; i < res.data.data.length; i++) {
             let u=res.data.data[i];
-            let arr={"value":u.title,"userid":u.userId};
+            let arr={"value":u.title,"noteId":u.noteId};
             arrs.push(arr);
           }
-          // console.log(arrs)
+          console.log(arrs)
 
           cb(arrs);
         })
@@ -261,14 +268,24 @@ export default {
         }
       }
       return s;
-    }
+    },
+
+    forceUpdate(){
+      this.getNextNotes(this.curPage)
+    },
 
 },
   mounted() {
+    // this.getNotes('1');
+    // console.log("第一次获取数据了")
     this.getNotes('1');
     this.curPage+=1
     this.getNextNotes(this.curPage)
+
   },
+  created() {
+
+  }
 }
 </script>
 

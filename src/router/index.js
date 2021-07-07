@@ -6,6 +6,8 @@ import NoteDetail from '../views/NoteDetail.vue'
 import BlogEdit from '../views/NoteEdit.vue'
 import NoteEdit from "@/views/NoteEdit";
 import Register from "@/views/Register";
+import Loading from "@/views/Loading";
+import Group from "@/views/Profile";
 
 Vue.use(VueRouter)
 
@@ -48,7 +50,16 @@ const routes = [
     name: 'NoteDetail',
     component: NoteDetail
   },
-
+  {
+    path: '/loading',
+    name:'Loading',
+    component: Loading
+  },
+  {
+    path: '/profile',
+    name:'Profile',
+    component: Group
+  }
 
 ]
 
