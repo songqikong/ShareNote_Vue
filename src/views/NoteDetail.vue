@@ -213,27 +213,42 @@ export default {
     deleteNote(){
       // console.log(this.noteInf)
       // this.noteInf.deleted = 1
-      console.log(this.noteInf)
-      this.$axios.post("/note/edit", {
-        noteVersionId: 2,
-        userId: 1,
-        noteId: this.noteInf.id,
-        publicStatus: 0,
-        starsNum: 0,
-        deleted: 1,
-        title: "test2",
-        description: "test222",
-        content: "test22222",
-        subjectId: 1,
-      },{
-        headers: {
-          "Authorization": localStorage.getItem("token")
-        }
-      }).then(res=>{
-        console.log("删除"+this.noteInf.id)
-      })
-      // this.$parent.forceUpdate()
-      this.$router.push("/")
+      this.$confirm('此操作将删除该笔记, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(async () => {
+
+        await this.$axios.post("/note/edit", {
+          noteVersionId: 2,
+          userId: 1,
+          noteId: this.noteInf.id,
+          publicStatus: 0,
+          starsNum: 0,
+          deleted: 1,
+          title: "test2",
+          description: "test222",
+          content: "test22222",
+          subjectId: 1,
+        }, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then((res) => {
+          console.log("删除" + this.noteInf.id)
+        })
+        // this.$parent.forceUpdate()
+        this.$router.push("/loading")
+
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });
+      });
+
+      // console.log(this.noteInf)
+
 
     }
   },
