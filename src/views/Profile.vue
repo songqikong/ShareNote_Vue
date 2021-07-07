@@ -75,14 +75,40 @@
                     </el-row>
 
                   </el-card>
-
-
                   </div>
+
+
+
                 </div>
+
+
+<!--                加入群组-->
+                  <div class="eachgroup" style="width: 50%;float: left">
+                    <el-card body-style="padding:10px" shadow="hover" style="margin-left: 5px;margin-right: 5px">
+                      <el-row>
+                        <el-col :span="4">
+                          <el-image src="/static/img/group.png" style="height: 50px;width: 50px"></el-image>
+
+                        </el-col>
+                        <el-col :span="18">
+                          <el-button type="text" style="font-size: 18px;color: #606266;padding-bottom: 0px;padding-top: 2px" @click="router_to_Join()">加入群组</el-button>
+
+                        </el-col>
+                      </el-row>
+
+                    </el-card>
+                  </div>
+
+
+
+
+
                 <div v-if="groups.height === 0">
                   <h1>当前没有加入任何群组！</h1>
                 </div>
               </el-tab-pane>
+
+
             </el-tabs>
           </el-card>
 
@@ -113,6 +139,10 @@ export default {
     router_to_Detail(noteId){
       this.$router.push("/note/"+noteId)
     },
+    router_to_Join(){
+      this.$router.push("/group/join")
+    },
+
     getGroups() {
       this.$axios.get("/group/getall",{
         headers: {
