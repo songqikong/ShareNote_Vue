@@ -68,11 +68,25 @@
                         <el-image src="/static/img/group.png" style="height: 50px;width: 50px"></el-image>
 
                       </el-col>
+
                       <el-col :span="18">
                         <span style="padding-bottom: 20px;color: #606266;font-size: 18px">{{item.groupName}}</span>
                         <p style="color: rgba(96,98,102,0.56);font-size: 15px;margin: 0;margin-top: 5px">{{item.description}}</p>
                       </el-col>
+
+                      <el-col :span="8">
+                        <el-button type="text" style="font-size: 16px;color: #ff0000;padding-bottom: 0px;padding-top: 2px;padding-left: 200%" @click="deleteGroup(item.groupName)">退出群组</el-button>
+
+
+                      </el-col>
+
+
                     </el-row>
+
+                    <el-row>
+
+                    </el-row>
+
 
                   </el-card>
                   </div>
@@ -157,6 +171,24 @@ export default {
     getUserInf(){
 
     },
+
+    async deleteGroup(groupId) {
+
+      await this.$axios.post('/group/useredit', {groupName: groupId, groupPassword: 0}, {
+        headers: {
+          "Authorization": localStorage.getItem("token")
+        }
+      }).then((res) => {
+        this.$message('成功删除!');
+
+        // this.$router.push("/profile");
+
+      });
+    }
+
+    ,
+
+
     getMyAll(currentpage){
       this.subject_req.currentPage = currentpage;
       const _this = this
