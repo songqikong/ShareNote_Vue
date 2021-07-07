@@ -8,6 +8,7 @@ import NoteEdit from "@/views/NoteEdit";
 import Register from "@/views/Register";
 import Loading from "@/views/Loading";
 import Group from "@/views/Profile";
+import GroupJoin from "@/views/GroupJoin";
 
 Vue.use(VueRouter)
 
@@ -16,6 +17,11 @@ const routes = [
     path: '/',
     name: 'Index',
     component: Index
+  },
+  {
+    path: '/group/join',
+    name: 'GroupJoin',
+    component: GroupJoin
   },
   {
     path: '/login',
