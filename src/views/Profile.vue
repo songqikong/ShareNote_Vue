@@ -180,6 +180,7 @@ export default {
         }
       }).then((res) => {
         this.$message('成功删除!');
+        this.getGroups();
 
         // this.$router.push("/profile");
 
