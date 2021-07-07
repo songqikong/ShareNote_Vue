@@ -41,7 +41,15 @@
 
             <!--            <el-divider style="margin-top: 0"></el-divider>-->
 
-            <div class="details" v-html="curContent"></div>
+            <div class="details" v-html="curContent">
+            </div>
+
+            <el-card>
+              <span style="float: bottom;color: #bdbdbd">{{noteVersion[0].sname}}</span>
+              <span style="float:right;color: #bdbdbd">{{noteVersion[0].editTime}}</span>
+            </el-card>
+
+
           </el-card>
 
         </el-col>
@@ -187,8 +195,8 @@ export default {
           // console.log(this.noteVersion[i].content)
         }
         // console.log(_this.noteVersion)
-        _this.curTitle = _this.noteVersion[_this.noteVersion.length - 1].title
-        _this.curContent = _this.noteVersion[_this.noteVersion.length - 1].content
+        _this.curTitle = _this.noteVersion[0].title
+        _this.curContent = _this.noteVersion[0].content
         this.ownNote = (_this.noteInf.userId === _this.$store.getters.getUser.id)
       })
 
@@ -204,16 +212,29 @@ export default {
     },
     deleteNote(){
       // console.log(this.noteInf)
-      this.noteInf.deleted = 1
+      // this.noteInf.deleted = 1
       console.log(this.noteInf)
-      this.$axios.post("/note/edit",this.noteInf,{
+      this.$axios.post("/note/edit", {
+        noteVersionId: 2,
+        userId: 1,
+        noteId: this.noteInf.id,
+        publicStatus: 0,
+        starsNum: 0,
+        deleted: 1,
+        title: "test2",
+        description: "test222",
+        content: "test22222",
+        subjectId: 1,
+      },{
         headers: {
           "Authorization": localStorage.getItem("token")
         }
       }).then(res=>{
         console.log("删除"+this.noteInf.id)
       })
+      // this.$parent.forceUpdate()
       this.$router.push("/")
+
     }
   },
   mounted() {
