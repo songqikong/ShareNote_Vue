@@ -131,6 +131,7 @@ export default {
       // console.log("没有用户")
     } else {
       this.isLogin = true
+      this.username = this.$store.getters.getUser.username
       this.avatar_src = this.$store.getters.getUser.avatar
       // console.log("有用户")
     }
