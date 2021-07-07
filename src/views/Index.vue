@@ -86,7 +86,7 @@ export default {
       subject_req:{
         subjectId:'0',
         currentPage:'1',
-        pageSize:'12'
+        pageSize:'25'
       },
       // loading:true,
       cutContent:'',
@@ -273,6 +273,8 @@ export default {
     forceUpdate(){
       this.getNextNotes(this.curPage)
     },
+
+
 
 },
   mounted() {

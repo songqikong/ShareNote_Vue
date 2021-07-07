@@ -75,25 +75,25 @@
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-card class="box-card" style="margin-top: 15px;margin-right: 5px">
-            <div slot="header" class="clearfix">
+          <el-card class="box-card" style="margin-top: 15px;margin-right: 5px;">
+            <div slot="header" style="padding-bottom: 0px;padding-top: 10px">
 
-              <el-form :inline="true"   :model="ruleForm" :rules="rules" ref="ruleForm"  class="demo-ruleForm" hide-required-asterisk>
-                <el-form-item label="评论" prop="context">
-                  <el-input v-model="ruleForm.context"></el-input>
+              <el-form  :model="ruleForm" :rules="rules" ref="ruleForm"  class="demo-ruleForm" hide-required-asterisk>
+                <el-form-item prop="context" style="margin-bottom: 10px">
+                  <el-input v-model="ruleForm.context" type="textarea" placeholder="请输入你的评论" rows="3" style="width: 100%"></el-input>
                 </el-form-item>
-                <el-form-item>
-                  <el-button type="primary" @click="submitForm('ruleForm',noteInf.id)">发表评论</el-button>
+                <el-form-item style="margin: 0px">
+                  <el-button type="primary" style="float: right" @click="submitForm('ruleForm',noteInf.id)">发表评论</el-button>
                 </el-form-item>
               </el-form>
             </div>
 
             <div v-for="(item,index) in comments" :key="index">
-              <table>
+              <table style="width: 100%">
                 <tr>
-                  <td>
+                  <td width="50px">
                     <div class="commentavatar">
-                    <img class="avatar" :src=item.avatar alt="图片加载失败">
+                      <img class="avatar" :src=item.avatar alt="图片加载失败">
                    </div>
                   </td>
                   <td>
@@ -102,7 +102,7 @@
                 <div class="commenttime" >{{item.editTime}}</div>
                   </td>
                   <td>
-                  <el-button type="text" class="el-icon-delete deletebutton" v-show="item.userId === userId" @click="comdelete(index)" >删除
+                  <el-button type="text" style="float: right" class="el-icon-delete deletebutton" v-show="item.userId === userId" @click="comdelete(index)" >删除
                   </el-button>
                   </td>
                 </tr>
@@ -352,6 +352,10 @@ export default {
       // console.log(this.noteInf)
 
 
+    },
+
+    getUserId(){
+      this.userId = this.$store.getters.getUser.id
     }
   },
   mounted() {
@@ -425,15 +429,18 @@ export default {
 }
 .commentname{
   font-family: "Microsoft YaHei",serif;
-  font-size: 12px;
+  font-size: 14px;
+  margin-bottom: 5px;
 }
 .commenttime{
   font-family: "Microsoft YaHei",serif;
   color:#99A2AA;
-  font-size: 12px;
+  font-size: 14px;
 }
 .commentcontext{
   font-family: "Microsoft YaHei",serif;
+  font-size: 18px;
+  margin-bottom: 5px;
 }
 .avatar{
   height: 40px;
