@@ -75,13 +75,39 @@
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-card class="box-card" style="margin-top: 15px;margin-right: 5px">
-            <div slot="header" class="clearfix">
-              <span class="headertitle">评论</span>
-              <el-button style="float: right; padding: 3px 0" type="text">操作按钮</el-button>
+          <el-card class="box-card" style="margin-top: 15px;margin-right: 5px;">
+            <div slot="header" style="padding-bottom: 0px;padding-top: 10px">
+
+              <el-form  :model="ruleForm" :rules="rules" ref="ruleForm"  class="demo-ruleForm" hide-required-asterisk>
+                <el-form-item prop="context" style="margin-bottom: 10px">
+                  <el-input v-model="ruleForm.context" type="textarea" placeholder="请输入你的评论" rows="3" style="width: 100%"></el-input>
+                </el-form-item>
+                <el-form-item style="margin: 0px">
+                  <el-button type="primary" style="float: right" @click="submitForm('ruleForm',noteInf.id)">发表评论</el-button>
+                </el-form-item>
+              </el-form>
             </div>
-            <div v-for="o in 4" :key="o" class="text item">
-              {{ '列表内容 ' + o }}
+
+            <div v-for="(item,index) in comments" :key="index">
+              <table style="width: 100%">
+                <tr>
+                  <td width="50px">
+                    <div class="commentavatar">
+                      <img class="avatar" :src=item.avatar alt="图片加载失败">
+                   </div>
+                  </td>
+                  <td>
+                <div class="commentname">{{ item.username}}</div>
+                <div class="commentcontext">{{item.context}}</div>
+                <div class="commenttime" >{{item.editTime}}</div>
+                  </td>
+                  <td>
+                  <el-button type="text" style="float: right" class="el-icon-delete deletebutton" v-show="item.userId === userId" @click="comdelete(index)" >删除
+                  </el-button>
+                  </td>
+                </tr>
+              </table>
+              <el-divider></el-divider>
             </div>
           </el-card>
         </el-col>
@@ -101,6 +127,7 @@ export default {
   components: {MenuHeader},
   data() {
     return {
+      userId:'',
       drawer: false,
       direction: 'rtl',
       noteInf: {
@@ -113,14 +140,55 @@ export default {
         deleted: '1',
         username: ''
       },
+      ruleForm: {
+          context: '',
+      },
       noteVersion: [],
       ownNote: false,
+      ownComment:false,
       curVersion: 1,
       curTitle: '',
-      curContent: ''
-    }
+      curContent: '',
+      curPage:1,
+      comments:[],
+      rules:{
+        context: [
+          { required: true, message: '评论不能为空哦', trigger: 'blur' },
+          { min: 1, max: 500, message: '长度在 1 到 500 个字符', trigger: 'blur' }
+        ]
+      }
+    };
   },
   methods: {
+    submitForm(formName,noteid) {
+      //console.log('submit!')
+      const _this = this
+      if(this.$store.getters.getUser.id === undefined){
+        this.$message.error('请先登录！');
+      }else {
+        this.$refs[formName].validate((valid) => {
+          if (valid) {
+            console.log('success')
+            this.$axios.post("/comment", {context:this.ruleForm.context,noteId:noteid}, {
+              headers: {
+                "Authorization": localStorage.getItem("token")
+              }
+            }).then(res => {
+              this.$message({
+                message:'评论成功',
+                type:'success',
+                duration:3000
+              });
+              this.commentshow()
+            })
+          } else {
+            console.log('error submit!!');
+            return false;
+          }
+        });
+
+      }
+    },
     star(noteid){
       // console.log(this.$store.getters.getUser.id)
       if(this.$store.getters.getUser.id === undefined){
@@ -143,6 +211,40 @@ export default {
             });
           }
         })
+      }
+    },
+    commentshow(noteid){
+      const _this=this
+      // console.log(this.$store.getters.getUser.id)
+      if(this.$store.getters.getUser.id === undefined){
+        this.$message.error('请先登录！');
+      }else{
+        this.$axios.post("/commentshow",{noteId:this.$route.params.noteId},{
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res=>{
+          _this.comments=res.data.data
+          console.log(this.comments);
+        })
+      }
+    },
+    async comdelete(index) {
+      console.log(index);
+      if (this.$store.getters.getUser.id === undefined) {
+        this.$message.error('请先登录！');
+      } else {
+        await this.$axios.post("/delcomment", {id: this.comments[index].id}, {
+          headers: {
+            "Authorization": localStorage.getItem("token")
+          }
+        }).then(res => {
+          this.$message({
+            message: '删除成功',
+            type: 'success'
+          })
+        })
+        this.commentshow();
       }
     },
     changeVersion(newVersion) {
@@ -250,10 +352,16 @@ export default {
       // console.log(this.noteInf)
 
 
+    },
+
+    getUserId(){
+      this.userId = this.$store.getters.getUser.id
     }
   },
   mounted() {
+    this.getUserId()
     this.getNote()
+    this.commentshow()
     if(this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined){
       this.$alert('您还没有登录', '请登录！', {
         confirmButtonText: '确定',
@@ -318,5 +426,27 @@ export default {
   margin-top: 2px;
   margin-bottom: 0px;
   padding: 0px;
+}
+.commentname{
+  font-family: "Microsoft YaHei",serif;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+.commenttime{
+  font-family: "Microsoft YaHei",serif;
+  color:#99A2AA;
+  font-size: 14px;
+}
+.commentcontext{
+  font-family: "Microsoft YaHei",serif;
+  font-size: 18px;
+  margin-bottom: 5px;
+}
+.avatar{
+  height: 40px;
+  /*margin-top: */
+  /*margin-bottom: 40px;*/
+  border-radius:100%;
+
 }
 </style>
