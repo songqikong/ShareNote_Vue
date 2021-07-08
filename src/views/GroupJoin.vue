@@ -8,7 +8,7 @@
               <h1 style="margin-bottom: 0px">加入群组</h1>
             </el-col>
             <el-col :span="6">
-              <el-button icon="el-icon-house" circle class="home_button" @click="routerToHome"></el-button>
+              <el-button icon="el-icon-back" circle class="home_button" @click="routerToHome"></el-button>
             </el-col>
           </el-row>
         </el-form-item>
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     routerToHome(){
-      this.$router.push("/")
+      this.$router.push("/profile")
     },
     submitForm(ruleForm) {
       this.$refs[ruleForm].validate((valid) => {
