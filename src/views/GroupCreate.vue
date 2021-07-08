@@ -5,7 +5,7 @@
         <el-form-item>
           <el-row>
             <el-col :span="18">
-              <h1 style="margin-bottom: 0px">加入群组</h1>
+              <h1 style="margin-bottom: 0">创建群组</h1>
             </el-col>
             <el-col :span="6">
               <el-button icon="el-icon-back" circle class="home_button" @click="routerToHome"></el-button>
@@ -22,12 +22,15 @@
         </el-form-item>
 
         <el-form-item>
-          <el-button type="primary" @click="submitForm('ruleForm')" class="loginButton">加入</el-button>
+          <el-input v-model="ruleForm.description" placeholder="请输入对群的描述" class="descriptionInput"></el-input>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm')" class="loginButton">创建</el-button>
         </el-form-item>
       </el-form>
     </el-card>
   </div>
-
 </template>
 
 <script>
@@ -39,16 +42,19 @@ export default {
       ruleForm: {
         groupName: '',
         groupPassword: '',
+        description:''
       },
       rules: {
         groupName: [
-          { required: true, message: '请输入账户', trigger: 'blur' },
-          { min: 1, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur' }
+          {required: true, message: '请输入组名', trigger: 'blur'},
+          {min: 1, max: 20, message: '长度在 5 到 20 个字符', trigger: 'blur'}
         ],
         groupPassword: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          {required: true, message: '请输入密码', trigger: 'blur'},
         ],
-
+        description: [
+          {required: true, message: '请输入描述', trigger: 'blur'},
+        ]
       }
     };
   },
@@ -60,13 +66,15 @@ export default {
       this.$refs[ruleForm].validate((valid) => {
         if (valid) {
           //alert('submit!');
+          console.log(this.ruleForm.groupName)
+          console.log(this.ruleForm.groupPassword)
           const _this = this
-          this.$axios.post('/group/useredit', this.ruleForm,{
+          this.$axios.post('/group/create',this.ruleForm,{
             headers: {
               "Authorization": localStorage.getItem("token")
             }
           }).then(res=>{
-            // console.log(res.data)
+             console.log(res.data)
             // const jwt = res.headers['authorization']
             // const userInfo = res.data.data
             //
@@ -77,7 +85,6 @@ export default {
             // console.log(_this.$store.getters.getUser)
 
             _this.$router.push("/profile")
-
 
           })
         } else {
@@ -92,6 +99,7 @@ export default {
   }
 }
 </script>
+
 
 <style scoped>
 .box-card{

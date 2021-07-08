@@ -18,9 +18,9 @@
 
                </el-col>
                <el-col :span="18">
-                 <p style="margin-top: 85px;margin-left: 85px;color: #2c3e50;font-size: 30px;margin-bottom: 20px">{{this.$store.getters.getUser.username}}
+                 <p style="margin-top: 90px;margin-left: 90px;color: #2c3e50;font-size: 30px;margin-bottom: 20px">{{this.$store.getters.getUser.username}}
                    <span style="font-size: 20px">希尔笔记好✌，真滴好</span></p>
-                 <h3 style="margin-left: 85px;color: rgba(44,62,80,0.62)">{{this.$store.getters.getUser.email}}</h3>
+                 <h3 style="margin-left: 90px;color: rgba(44,62,80,0.62)">{{this.$store.getters.getUser.email}}</h3>
                </el-col>
                <el-col :span="2">
                  <!--             <el-button type="primary" icon="el-icon-edit" circle style="mar"></el-button>-->
@@ -83,19 +83,11 @@
                          </el-button>
 
                        </el-col>
-
-
                      </el-row>
-
                      <el-row>
-
                      </el-row>
-
                    </el-card>
                  </div>
-
-
-
                </div>
 
 
@@ -109,6 +101,21 @@
                      </el-col>
                      <el-col :span="18">
                        <el-button type="text" style="font-size: 16px;color: #606266;padding-bottom: 0px;padding-top: 15px" @click="router_to_Join()">加入群组</el-button>
+
+                     </el-col>
+                   </el-row>
+
+                 </el-card>
+               </div>
+               <div class="eachgroup" style="width: 50%;float: left">
+                 <el-card body-style="padding:10px" shadow="hover" style="margin-left: 5px;margin-right: 5px">
+                   <el-row>
+                     <el-col :span="4">
+                       <el-image src="/static/img/join.png" style="height: 40px;width: 40px;margin-left: 5px;margin-top: 5px"></el-image>
+
+                     </el-col>
+                     <el-col :span="18">
+                       <el-button type="text" style="font-size: 16px;color: #606266;padding-bottom: 0px;padding-top: 15px" @click="router_to_Creat()">创建群组</el-button>
 
                      </el-col>
                    </el-row>
@@ -161,6 +168,9 @@ export default {
     },
     router_to_Join(){
       this.$router.push("/group/join")
+    },
+    router_to_Creat(){
+      this.$router.push("/group/create")
     },
 
     getGroups() {
