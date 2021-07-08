@@ -18,7 +18,7 @@ axios.interceptors.response.use(response=>{
         // console.log("拦截");
         //账号密码不正确 弹窗警告
         Element.Message({
-            message:response.data.msg,
+            message:response.data.msg === null?"请登录！":response.data.msg,
             type:'error',
             duration:1000
         })

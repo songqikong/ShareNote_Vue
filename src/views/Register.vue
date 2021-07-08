@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="bg">
     <el-card class="box-card">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
         <el-form-item>
@@ -66,7 +66,16 @@ export default {
       }
     };
   },
-      methods: {
+  created() {
+    if(this.$store.getters.getUser.id !== undefined){
+      // this.$message.error("您已经登录！")
+      this.$router.push("/")
+    }
+    },
+  methods: {
+        routerToHome(){
+          this.$router.push("/")
+        },
         routerToHome(){
           this.$router.push("/")
         },
@@ -131,5 +140,15 @@ export default {
   float: right;
   margin-top: 16px;
   /*padding: 5px;*/
+}
+.home_button{
+  float: right;
+  margin-top: 16px;
+  /*padding: 5px;*/
+}
+.bg{
+  background-image: url('/static/img/bg3.png');
+  /*padding-top: 0px;*/
+  padding-bottom: 305px;
 }
 </style>

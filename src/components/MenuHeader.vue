@@ -14,11 +14,13 @@
             <el-menu-item index="1" v-on:click="selectSubject(0)">笔记广场</el-menu-item>
             <el-submenu index="2">
               <template slot="title">各科目笔记</template>
-              <el-menu-item index="2-1" v-on:click="selectSubject(1)">数学</el-menu-item>
-              <el-menu-item index="2-2" v-on:click="selectSubject(2)">英语</el-menu-item>
+              <div v-for="item in subject">
+                <el-menu-item index="2-1" v-on:click="selectSubject(item.id)" v-show="item.id !== 5">{{ item.sname }}</el-menu-item>
+              </div>
+<!--              <el-menu-item index="2-2" v-on:click="selectSubject(2)">英语</el-menu-item>-->
 <!--              <el-menu-item index="2-3" v-on:click="selectSubject(2)">英语</el-menu-item>-->
             </el-submenu>
-            <el-menu-item index="3">交流心得</el-menu-item>
+            <el-menu-item index="3" v-on:click="selectSubject(5)">交流心得</el-menu-item>
         </el-menu>
       </el-col>
       <el-col :span="4">
@@ -54,7 +56,7 @@
 
           <el-menu-item style="float: right;height: 30px;margin-top: 6px">
             <div class="right-gird" style="height: 30px" @click="notice">
-              <el-badge :value="12" class="notice" style="height: 30px">
+              <el-badge value="0" class="notice" style="height: 30px">
                 <i class="el-icon-message-solid" style="padding-bottom: 40px"></i>
               </el-badge>
             </div>
@@ -76,6 +78,7 @@ export default {
 
   data() {
     return {
+      subject:[],
         isLogin: false,
         avatar_src:"",
         username:""
@@ -123,6 +126,11 @@ export default {
     }
   },
 
+  created() {
+    this.$axios.get('/subject').then(res=>{
+      this.subject = res.data.data
+    })
+  },
   mounted: function () {
     // const _this = this
     if (this.$store.getters.getUser === null || this.$store.getters.getUser.id === undefined) {

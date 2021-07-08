@@ -13,7 +13,7 @@
 
           <div class="group_select" style="float: left;margin-left: 15px">
             <el-button type="text" style="font-size:medium">全部笔记</el-button>
-            <el-button type="text" style="color:#bdbdbd">只看我的</el-button>
+<!--            <el-button type="text" style="color:#bdbdbd">只看我的</el-button>-->
           </div>
 <!--搜索框-->
 <!--          <el-button icon="el-icon-search" style="float: right;margin-left: 6px;margin-right: 5px"></el-button>-->
@@ -32,7 +32,7 @@
         </el-col>
       </el-row>
 <!--瀑布流展示笔记区-->
-      <waterfall :col="4" :data="notes" :loadDistance="100" style="margin-top: 11px" @loadmore="loadmore">
+      <waterfall :col="4" :data="notes" :loadDistance="50" style="margin-top: 11px" @loadmore="loadmore">
         <template>
           <div
               class="note"
@@ -149,11 +149,15 @@ export default {
 
     refreshNotes(subject){
       this.subject_req.subjectId = subject;
+      this.curPage = 1
       this.getNotes('1');
     },
 
     //获取帖子
     getNotes(currentpage){
+      this.notes = []
+      this.$waterfall.forceUpdate()
+
       this.subject_req.currentPage = currentpage;
       const _this = this
       this.$axios.post("/notes",_this.subject_req).then(res=>{

@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="bg">
     <el-card class="box-card">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
         <el-form-item>
           <el-row>
             <el-col :span="18">
-              <h1 style="margin-bottom: 0px">登录</h1>
+              <h1 style="margin-bottom: 0">登录</h1>
             </el-col>
             <el-col :span="6">
               <el-button icon="el-icon-house" circle class="home_button" @click="routerToHome"></el-button>
@@ -53,6 +53,12 @@ export default {
       }
     };
   },
+  created() {
+    if(this.$store.getters.getUser.id !== undefined){
+      // this.$message.error("您已经登录！")
+      this.$router.push("/")
+    }
+    },
   methods: {
     routerToReg(){
       this.$router.push("/register")
@@ -101,7 +107,7 @@ export default {
   padding-right: 30px;
   padding-bottom: 20px;
   width: 400px;
-  margin-top: 200px;
+  /*margin-top: px;*/
 }
 .loginButton{
   width: 100%;
@@ -116,5 +122,10 @@ export default {
   float: right;
   margin-top: 16px;
   /*padding: 5px;*/
+}
+.bg{
+  background-image: url('/static/img/bg3.png');
+  padding-top: 200px;
+  padding-bottom: 430px;
 }
 </style>

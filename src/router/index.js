@@ -8,7 +8,10 @@ import NoteEdit from "@/views/NoteEdit";
 import Register from "@/views/Register";
 import Loading from "@/views/Loading";
 import Group from "@/views/Profile";
+// import GroupJoin from "@/views/GroupJoin";
+import GroupDetail from "@/views/GroupDetail";
 import GroupJoin from "@/views/GroupJoin";
+import GroupCreate from "@/views/GroupCreate";
 
 Vue.use(VueRouter)
 
@@ -22,6 +25,11 @@ const routes = [
     path: '/group/join',
     name: 'GroupJoin',
     component: GroupJoin
+  },
+  {
+    path: '/group/create',
+    name: 'GroupJoin',
+    component: GroupCreate
   },
   {
     path: '/login',
@@ -65,6 +73,11 @@ const routes = [
     path: '/profile',
     name:'Profile',
     component: Group
+  },
+  {
+    path: '/groupdetail/:groupId',
+    name:'GroupDetail',
+    component: GroupDetail
   }
 
 ]

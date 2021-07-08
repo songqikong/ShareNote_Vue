@@ -45,8 +45,8 @@
             </div>
 
             <el-card shadow="never">
-              <span style="float: bottom;color: #bdbdbd">{{noteVersion[0].sname}}</span>
-              <span style="float:right;color: #bdbdbd">{{noteVersion[0].editTime}}</span>
+              <span style="float: bottom;color: #bdbdbd">{{noteVersion[0] === undefined?"null":noteVersion[0].sname}}</span>
+              <span style="float:right;color: #bdbdbd">{{noteVersion[0] === undefined?"null":noteVersion[0].editTime}}</span>
             </el-card>
 
 
@@ -77,7 +77,7 @@
         <el-col :span="16">
           <el-card class="box-card" style="margin-top: 15px;margin-right: 5px" body-style="padding:0">
             <div slot="header" style="padding-bottom: 0px;padding-top: 10px">
-              <h2 style="margin: 0;margin-bottom: 18px">评论</h2>
+              <h2 style="margin: 0;margin-bottom: 18px;color: #606266">评论</h2>
               <el-form  :model="ruleForm" :rules="rules" ref="ruleForm"  class="demo-ruleForm" hide-required-asterisk>
                 <el-form-item prop="context" style="margin-bottom: 15px">
                   <el-input v-model="ruleForm.context" type="textarea" placeholder="请输入你的评论" rows="5" style="width: 100%"></el-input>
@@ -217,7 +217,7 @@ export default {
     commentshow(noteid){
       const _this=this
       // console.log(this.$store.getters.getUser.id)
-      if(this.$store.getters.getUser.id === undefined){
+      if(this.$store.getters.getUser === null ||this.$store.getters.getUser.id === undefined){
         this.$message.error('请先登录！');
       }else{
         this.$axios.post("/commentshow",{noteId:this.$route.params.noteId},{
@@ -300,6 +300,7 @@ export default {
         // console.log(_this.noteVersion)
         _this.curTitle = _this.noteVersion[0].title
         _this.curContent = _this.noteVersion[0].content
+        _this.curVersion = _this.noteVersion[0].version
         this.ownNote = (_this.noteInf.userId === _this.$store.getters.getUser.id)
       })
 
@@ -356,7 +357,9 @@ export default {
     },
 
     getUserId(){
-      this.userId = this.$store.getters.getUser.id
+      if(this.$store.getters.getUser !== null){
+        this.userId = this.$store.getters.getUser.id
+      }
     }
   },
   mounted() {

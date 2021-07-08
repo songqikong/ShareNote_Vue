@@ -1,6 +1,6 @@
 <template>
  <div class="group_main">
-    <MenuHeader></MenuHeader>
+    <NoneMenuHeader></NoneMenuHeader>
 <!--   <el-row>-->
 <!--     <el-col :span="16" :offset="4">-->
        <div class="profile">
@@ -8,7 +8,7 @@
 
          <el-card class="box-card" body-style="padding:0" style="height: 400px">
            <div class="top_img" style="position:relative;">
-             <el-image src="/static/img/backgroud.jpg" class="image" style="height: 270px" fit="none"></el-image>
+             <el-image src="/static/img/bg2.jpg" class="image" style="height: 270px" fit="cover"></el-image>
            </div>
 
            <div class="ava_username" style="padding: 15px;position:absolute;top: 250px;margin-left: 10px">
@@ -18,9 +18,9 @@
 
                </el-col>
                <el-col :span="18">
-                 <p style="margin-top: 90px;margin-left: 90px;color: #2c3e50;font-size: 30px;margin-bottom: 20px">{{this.$store.getters.getUser.username}}
+                 <p style="margin-top: 90px;margin-left: 110px;color: #2c3e50;font-size: 30px;margin-bottom: 20px">{{this.$store.getters.getUser.username}}
                    <span style="font-size: 20px">希尔笔记好✌，真滴好</span></p>
-                 <h3 style="margin-left: 90px;color: rgba(44,62,80,0.62)">{{this.$store.getters.getUser.email}}</h3>
+                 <h3 style="margin-left: 110px;color: rgba(44,62,80,0.62)">{{this.$store.getters.getUser.email}}</h3>
                </el-col>
                <el-col :span="2">
                  <!--             <el-button type="primary" icon="el-icon-edit" circle style="mar"></el-button>-->
@@ -34,6 +34,9 @@
            <el-tabs tab-position='top' style="margin: 15px" type="" >
 
              <el-tab-pane label="我的笔记">
+               <div v-show="notes.length === 0">
+                 <p style="text-align: center;font-size: 20px;color:rgba(0,0,0,0.57);">您还没有发布笔记哦~</p>
+               </div>
                <div
                    class="note"
                    v-for="(item,index) in notes"
@@ -57,6 +60,9 @@
              </el-tab-pane>
 
              <el-tab-pane label="我的群组">
+               <div v-show="groups.length === 0">
+                 <p style="text-align: center;font-size: 20px;color:rgba(0,0,0,0.57);">您还没有加入群组哦~</p>
+               </div>
                <div
                    class="note"
                    v-show="groups.height!==0"
@@ -71,7 +77,7 @@
 
                        </el-col>
                        <el-col :span="16">
-                         <span style="padding-bottom: 20px;color: #606266;font-size: 16px">{{item.groupName}}</span>
+                         <span style="padding-bottom: 20px;color: #606266;font-size: 16px" @click="router_to_GroupNotes(item.id)">{{item.groupName}}</span>
                          <p style="color: rgba(96,98,102,0.56);font-size: 15px;margin: 0;margin-top: 5px">{{item.description}}  </p>
                        </el-col>
 
@@ -83,11 +89,19 @@
                          </el-button>
 
                        </el-col>
+
+
                      </el-row>
+
                      <el-row>
+
                      </el-row>
+
                    </el-card>
                  </div>
+
+
+
                </div>
 
 
@@ -143,12 +157,12 @@
 </template>
 
 <script>
-import MenuHeader from "@/components/MenuHeader";
+import NoneMenuHeader from "@/components/NoneMenuHeader";
 
 
 export default {
   name: "profile",
-  components: {MenuHeader},
+  components: {NoneMenuHeader},
   data(){
     return{
       groupdetails:false,
@@ -163,6 +177,9 @@ export default {
   },
 
   methods:{
+    router_to_GroupNotes(groupId){
+      this.$router.push("/groupdetail/"+groupId)
+    },
     router_to_Detail(noteId){
       this.$router.push("/note/"+noteId)
     },
