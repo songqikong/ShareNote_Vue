@@ -3,7 +3,14 @@
     <el-card class="box-card">
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" class="demo-ruleForm">
         <el-form-item>
-          <h1 style="margin-bottom: 0px">注册</h1>
+          <el-row>
+            <el-col :span="18">
+              <h1 style="margin-bottom: 0px">注册</h1>
+            </el-col>
+            <el-col :span="6">
+              <el-button icon="el-icon-house" circle class="home_button" @click="routerToHome"></el-button>
+            </el-col>
+          </el-row>
         </el-form-item>
 
         <el-form-item prop="username">
@@ -60,6 +67,9 @@ export default {
     };
   },
       methods: {
+        routerToHome(){
+          this.$router.push("/")
+        },
         submitForm(ruleForm) {
           if(this.ruleForm.password !== this.checkpassword){
             this.$message({
@@ -116,5 +126,10 @@ export default {
 }
 .pwdInput{
   margin-bottom: 10px;
+}
+.home_button{
+  float: right;
+  margin-top: 16px;
+  /*padding: 5px;*/
 }
 </style>

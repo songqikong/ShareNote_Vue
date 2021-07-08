@@ -21,8 +21,9 @@
           <el-input v-model="ruleForm.password" placeholder="请输入密码" class="pwdInput" type="password"></el-input>
         </el-form-item>
 
-        <el-form-item>
+        <el-form-item style="margin-bottom: 0">
           <el-button type="primary" @click="submitForm('ruleForm')" class="loginButton">登录</el-button>
+          <el-button @click="routerToReg()" style="margin-left: 0;width: 100%;margin-top: 10px">现在注册</el-button>
         </el-form-item>
       </el-form>
     </el-card>
@@ -53,6 +54,9 @@ export default {
     };
   },
   methods: {
+    routerToReg(){
+      this.$router.push("/register")
+    },
     routerToHome(){
       this.$router.push("/")
     },
