@@ -44,7 +44,7 @@
             <div class="details" v-html="curContent">
             </div>
 
-            <el-card>
+            <el-card shadow="never">
               <span style="float: bottom;color: #bdbdbd">{{noteVersion[0].sname}}</span>
               <span style="float:right;color: #bdbdbd">{{noteVersion[0].editTime}}</span>
             </el-card>
@@ -75,12 +75,12 @@
       </el-row>
       <el-row>
         <el-col :span="16">
-          <el-card class="box-card" style="margin-top: 15px;margin-right: 5px;">
+          <el-card class="box-card" style="margin-top: 15px;margin-right: 5px" body-style="padding:0">
             <div slot="header" style="padding-bottom: 0px;padding-top: 10px">
-
+              <h2 style="margin: 0;margin-bottom: 18px">评论</h2>
               <el-form  :model="ruleForm" :rules="rules" ref="ruleForm"  class="demo-ruleForm" hide-required-asterisk>
-                <el-form-item prop="context" style="margin-bottom: 10px">
-                  <el-input v-model="ruleForm.context" type="textarea" placeholder="请输入你的评论" rows="3" style="width: 100%"></el-input>
+                <el-form-item prop="context" style="margin-bottom: 15px">
+                  <el-input v-model="ruleForm.context" type="textarea" placeholder="请输入你的评论" rows="5" style="width: 100%"></el-input>
                 </el-form-item>
                 <el-form-item style="margin: 0px">
                   <el-button type="primary" style="float: right" @click="submitForm('ruleForm',noteInf.id)">发表评论</el-button>
@@ -89,7 +89,7 @@
             </div>
 
             <div v-for="(item,index) in comments" :key="index">
-              <table style="width: 100%">
+              <table style="width: 100%;margin: 20px">
                 <tr>
                   <td width="50px">
                     <div class="commentavatar">
@@ -102,13 +102,14 @@
                 <div class="commenttime" >{{item.editTime}}</div>
                   </td>
                   <td>
-                  <el-button type="text" style="float: right" class="el-icon-delete deletebutton" v-show="item.userId === userId" @click="comdelete(index)" >删除
+                  <el-button type="text" style="float: right;margin-right: 40px" class="el-icon-delete deletebutton" v-show="item.userId === userId" @click="comdelete(index)" >删除
                   </el-button>
                   </td>
                 </tr>
               </table>
               <el-divider></el-divider>
             </div>
+            <span></span>
           </el-card>
         </el-col>
       </el-row>
@@ -375,6 +376,9 @@ export default {
 </script>
 
 <style scoped>
+._main_divider{
+  margin: 0px;
+}
 .Main {
   margin: 15px;
 }
@@ -428,17 +432,17 @@ export default {
   padding: 0px;
 }
 .commentname{
-  font-family: "Microsoft YaHei",serif;
+  /*font-family: "Microsoft YaHei",serif;*/
   font-size: 14px;
   margin-bottom: 5px;
 }
 .commenttime{
-  font-family: "Microsoft YaHei",serif;
+  /*font-family: "Microsoft YaHei",serif;*/
   color:#99A2AA;
   font-size: 14px;
 }
 .commentcontext{
-  font-family: "Microsoft YaHei",serif;
+  /*font-family: "Microsoft YaHei",serif;*/
   font-size: 18px;
   margin-bottom: 5px;
 }
@@ -449,4 +453,5 @@ export default {
   border-radius:100%;
 
 }
+
 </style>

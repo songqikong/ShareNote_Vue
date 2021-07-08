@@ -40,7 +40,7 @@
                                   command="register">注册</el-dropdown-item>
 
                 <el-dropdown-item v-show="isLogin"
-                                  command="username">{{ username }}</el-dropdown-item>
+                                  command="username" disabled>{{ username }}</el-dropdown-item>
                 <el-dropdown-item v-show="isLogin"
                                   command="profile">个人信息</el-dropdown-item>
                 <el-dropdown-item v-show="isLogin"
