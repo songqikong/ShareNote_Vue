@@ -1,6 +1,6 @@
 # ShareNote Frontend Vue Scaffolding Code
 
-[中文](https://github.com/yourusername/sharenote_vue/blob/main/README_CN.md)
+[中文](https://github.com/songqikong/ShareNote_Vue/blob/master/README_CN.md)
 
 This project is a Vue-based frontend scaffold for ShareNote, divided into three main technical components:
 
